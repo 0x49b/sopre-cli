@@ -1,0 +1,31 @@
+sopre-qas-path: "\\\\i90256\\Quintiq 609\\"
+sopre-qas-binary: "QAS-Setup-64-6_0_9.exe"
+sopre-install-path: "C:\\Program Files\\Quintiq\\Quintiq 60\\bin"
+sopre-properties-path: "C:\\Program Files\\Quintiq\\Quintiq 60\\etc"
+sopre-gui-path:
+  d:
+    ap:
+      designer: "DEV_AP_60_QClient"
+      client: "DEV_AP_60_QThinClient"
+      editor: "DEV_AP_60_QThinClientEditor"
+    ep:
+      designer: "DEV_EP_60_QClient"
+      client: "DEV_EP_60_QThinClient"
+      editor: "DEV_EP_60_QThinClientEditor"
+  bc:
+    ep:
+      designer: "BCTEST_EP_60_QClient"
+      client: "BCTEST_EP_60_QThinClient"
+      editor: "BCTEST_EP_60_QThinClientEditor"
+    global:
+      designer: "BCTEST_GLOBAL_60_QClient"
+      client: "BCTEST_GLOBAL_60_QThinClient"
+      editor: "BCTEST_GLOBAL_60_QThinClientEditor"
+    le:
+      designer: "BCTEST_LE_60_QClient"
+      client: "BCTEST_LE_60_QThinClient"
+      editor: "BCTEST_LE_60_QThinClientEditor"
+    plst:
+      designer: "BCTEST_PLST_60_QClient"
+      client: "BCTEST_PLST_60_QThinClient"
+      editor: "BCTEST_PLST_60_QThinClientEditor"
