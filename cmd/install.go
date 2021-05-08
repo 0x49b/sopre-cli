@@ -4,11 +4,15 @@ import (
 	"fmt"
 	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
+	"golang.org/x/sys/windows"
 	"io"
 	"math"
 	"os"
 	"os/exec"
+	"path"
 	"strconv"
+	"strings"
+	"syscall"
 	"time"
 )
 
@@ -22,13 +26,23 @@ var installCmd = &cobra.Command{
 	Short: "Install GUI for Dev and BCTest on your machine",
 	Long:  `Install GUI for Dev and BCTest on your machine`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("install called")
-		createFolders()
+
 		if !skipDownload {
 			downloadQASInstall()
 		}
 
-		startInstaller()
+		if !amAdmin() {
+			runMeElevated()
+		}
+		time.Sleep(10 * time.Second)
+
+	},
+	PreRun: func(cmd *cobra.Command, args []string) {
+		dirname, err := os.UserHomeDir()
+		if err != nil {
+			panic(err)
+		}
+		destFilePath = path.Join(dirname, "Downloads", "QAS-Setup-64-6_0_9.exe")
 	},
 }
 
@@ -93,9 +107,10 @@ func downloadQASInstall() {
 	stat, err := srcFile.Stat()
 
 	check(err)
+	fmt.Printf("Size of QAS Installer %s.\n", fileSize(stat.Size()))
 
 	s := spinner.New(spinner.CharSets[26], 100*time.Millisecond)
-	s.Prefix = fmt.Sprintf("Size of QAS Installer %s. \nDownloading ", fileSize(stat.Size()))
+	s.Prefix = "Downloading "
 	s.Start()
 
 	destFile, err := os.Create(destFilePath) // creates if file doesn't exist
@@ -113,4 +128,38 @@ func startInstaller() {
 	cmd := exec.Command(destFilePath)
 	err := cmd.Run()
 	check(err)
+}
+
+func runMeElevated() {
+	verb := "runas"
+	//exe, _ := os.Executable()
+	//cwd, _ := os.Getwd()
+	args := strings.Join(os.Args[1:], " ")
+
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	verbPtr, _ := syscall.UTF16PtrFromString(verb)
+	exePtr, _ := syscall.UTF16PtrFromString(destFilePath)
+	cwdPtr, _ := syscall.UTF16PtrFromString(path.Join(dirname, "Downloads"))
+	argPtr, _ := syscall.UTF16PtrFromString(args)
+
+	fmt.Println(verbPtr, exePtr, cwdPtr, argPtr)
+
+	var showCmd int32 = 0 //SW_NORMAL
+
+	err = windows.ShellExecute(0, verbPtr, exePtr, argPtr, cwdPtr, showCmd)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func amAdmin() bool {
+	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
+	if err != nil {
+		return false
+	}
+	return true
 }

@@ -133,7 +133,7 @@ func openApplication(args []string) {
 
 	time.Sleep(5 * time.Second)
 	s.Stop()
-	fmt.Printf("started %s [%d]", executable, pid)
+	fmt.Printf("started %s [%d]\n\n", executable, pid)
 
 }
 
