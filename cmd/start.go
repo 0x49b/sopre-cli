@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/briandowns/spinner"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
@@ -13,21 +14,43 @@ import (
 // startCmd represents the start command
 var startCmd = &cobra.Command{
 	Use:   "start",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Start SOPRE UI's",
+	Long: `Start SOPRE UI's over the cli. 
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Start a ui with: sopre start <platform> <dataset> <ui>
+Example: sopre start d ap client
+
+All Shortcuts created while installing local model are supported:
+
+Platforms: 	d, dev, b, bc, bctests
+UI's: 		designer, client, editor
+datasets: 	dev
+			  - ap
+			  - ep
+			bc
+			  - ep
+			  - global
+			  - le
+			  - plst
+`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) < 3 {
+			color.Red("ERROR: Too few arguments supplied to start a sopre ui\n\n")
+			_ = cmd.Help()
+			os.Exit(0)
+		}
 		openApplication(args)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(startCmd)
-	startCmd.Flags().StringP("platform", "p", "d", "Platform to use [d, bc]")
+	startCmd.SetUsageTemplate("Usage:\n" +
+		"\tsopre start <platform> <dataset> <ui>\n" +
+		"\n" +
+		"Flags:\n" +
+		"\t-h, --help\t\t\thelp for start\n" +
+		"\t--config string\t\tconfig file (default is $HOME/.sopre.yaml)\n")
 }
 
 func openApplication(args []string) {
@@ -106,9 +129,11 @@ func openApplication(args []string) {
 		panic(qtq_err)
 	}
 
+	pid := qtq.Process.Pid
+
 	time.Sleep(5 * time.Second)
 	s.Stop()
-	fmt.Printf("started %s", executable)
+	fmt.Printf("started %s [%d]", executable, pid)
 
 }
 
