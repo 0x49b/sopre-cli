@@ -1,9 +1,12 @@
 package cmd
 
 import (
+	"github.com/fatih/color"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
+	"runtime"
 )
 
 var cfgFile string
@@ -13,6 +16,15 @@ var rootCmd = &cobra.Command{
 	Use:   "sopre",
 	Short: "SOPRE CLI to operate GUI",
 	Long:  `With SOPRE CLI you can start / install your local sopre model`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+
+		runos := runtime.GOOS
+
+		if runos == "windows" {
+			color.Red("ERROR: This software only runs on Window Machines\n\n")
+			os.Exit(1)
+		}
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

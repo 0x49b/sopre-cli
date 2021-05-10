@@ -110,7 +110,6 @@ func openApplication(args []string) {
 	var qtq = exec.Command("")
 	properties := fmt.Sprintf("/startup.properties=%s\\%s.properties", propertiesPath, executable)
 	if exe == "client" || exe == "editor" {
-
 		qtq = exec.Command(gui, properties)
 	} else {
 		qtq = exec.Command(gui)
