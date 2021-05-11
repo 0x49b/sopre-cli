@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
+	"runtime"
 	"time"
 )
 
@@ -34,6 +35,14 @@ datasets: 	dev
 			  - plst
 `,
 	Run: func(cmd *cobra.Command, args []string) {
+
+		runos := runtime.GOOS
+
+		if runos != "windows" {
+			color.Red("ERROR: This software only runs on Window Machines\n\n")
+			os.Exit(1)
+		}
+
 		if len(args) < 3 {
 			color.Red("ERROR: Too few arguments supplied to start a sopre ui\n\n")
 			_ = cmd.Help()
